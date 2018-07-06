@@ -1,0 +1,142 @@
+
+<!-- show all products in dataTables -->
+<!DOCTYPE html>
+<html>
+<header>
+<title>Imarya Inventory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/datatable.js"></script>
+<link rel="stylesheet" href="/datatable.css">
+<link rel="stylesheet" href="style/style.css">
+</header>
+<script>
+$(document).ready(function() {
+
+    $('#productTable tfoot th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    } );
+    var productTable = $('#productTable').DataTable(
+        {
+            stateSave: true,
+            "scrollX": true
+        }
+    );
+
+    // apply the search to dataTables
+    productTable.columns().every( function () {
+        var that = this;
+ 
+        $( 'input', this.footer() ).on( 'keyup change', function () {
+            if ( that.search() !== this.value ) {
+                that
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+
+    $.ajax({
+        type: "get",
+        dataType: "json",
+        url: "./products",
+        success: function(productData){
+            console.log(productData['products']);
+            for(var i = 0; i < productData['products'].length; i ++){
+                for(var m = 0; m < productData['products'][i].variants.length; m++){
+                    productTable.row.add( [
+                        // productData['products'][i].id,
+                        productData['products'][i].variants[m].sku,
+                        productData['products'][i].title,
+                        productData['products'][i].variants[m].title,
+                        productData['products'][i].variants[m].inventory_quantity,
+                        productData['products'][i].tags,
+                        productData['products'][i].product_type,
+                        productData['products'][i].published_at,
+                        productData['products'][i].published_scope,
+                        productData['products'][i].vendor,
+                        i,
+                        productData['products'][i].created_at
+                    ] ).draw();
+
+                }
+            }
+        $('.largeLoader').hide();
+        }
+    });
+
+
+
+} );
+// dataTable function
+
+
+
+</script>
+<body>
+
+<div class="dataTableDiv">
+    <table id="productTable" class="display dataTableStyle" style="width:95%">
+        <thead>
+            <tr>
+                <!-- <th>id</th> -->
+                <th>SKU</th>
+                <th>Product Name</th>
+                <th>Variants</th>
+                <th>Qty</th>
+                <th>Tags</th>
+                <th>Product Type</th>
+                <th>published_at</th>
+                <th>Published Scope</th>
+                <th>Vendor</th>
+                <th>Array Number</th>
+                <th>Created at</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- <tr>
+                <td>Tiger Nixon</td>
+                <td>System Architect</td>
+                <td>Edinburgh</td>
+                <td>61</td>
+                <td>2011/04/25</td>
+                <td>$320,800</td>
+                <td>Edinburgh</td>
+                <td>61</td>
+                <td>2011/04/25</td>
+                <td>$320,800</td>
+            </tr> -->
+    
+        <tfoot>
+            <tr>
+                <!-- <th>id</th> -->
+                <th>SKU</th>
+                <th>Product Name</th>
+                <th>Variants</th>
+                <th>Qty</th>
+                <th>Tags</th>
+                <th>Product Type</th>
+                <th>published_at</th>
+                <th>Published Scope</th>
+                <th>Vendor</th>
+                <th>Array Number</th>
+                <th>Created at</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
+
+<div class="largeLoader" id="largeLoader">
+    <div class="loader largeLoaderCenter"></div>
+</div>
+
+
+
+</body>
+</html> 

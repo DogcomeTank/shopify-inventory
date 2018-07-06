@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<title>Imarya Order Pickup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="/style/orderPickup.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      type: "get",
+      dataType: "json",
+      url: "/qrcode/orderInfo/orderId/<%= orderInfoId %>",
+      timeout: 6000,
+      success: function (orderData) {
+
+        console.log(orderData);
+        if (orderData !== undefined) {
+          $('#orderNumber').html(orderData.order.name);
+          $('#paymentStatus').html(orderData.order.financial_status);
+
+          if (orderData.order.email == '') {
+            $('#userEmail').html("Not Available");
+          } else {
+            $('#userEmail').html(orderData.order.email);
+          }
+
+          if (orderData.order.phone == '' || orderData.order.phone == null) {
+            $('#userPhone').html("Not Available");
+          } else {
+            $('#userPhone').html(orderData.order.phone);
+          }
+
+
+          for (var i = 0; i < orderData.order.line_items.length; i++) {
+            var lineNumber = i + 1;
+            var tableTr = $('<tr></tr>');
+            $('<td>' + lineNumber + '</td>').appendTo(tableTr);
+            $('<td class="orderInfoA">' + orderData.order.line_items[i].title + '</td>').appendTo(tableTr);
+            $('<td class="orderInfoA">' + orderData.order.line_items[i].variant_title + '</td>').appendTo(
+              tableTr);
+            $('<td class="orderInfoA">' + orderData.order.line_items[i].quantity + '</td>').appendTo(tableTr);
+            tableTr.appendTo('#orderInfoTable');
+          }
+        }else{
+          $(".orderInfoContainer").hide();
+        $('<h5>There is a an error....</h5>').appendTo("errorMsg");
+        }
+
+
+      },
+      error: function (err) {
+        $(".orderInfoContainer").hide();
+        $('<h5>There is a an error....</h5>').appendTo("errorMsg");
+      }
+    });
+  });
+
+  function toggleUserInfo() {
+    var x = document.getElementById("userInfoDiv");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+</script>
+
+<body>
+
+  <div id="orderInfoContainer w3-container" class="orderInfoContainer">
+    <div id="errorMsg"></div>
+    <h2>Order Number:
+      <span id="orderNumber"></span>
+    </h2>
+    <p>Payment Status:
+      <span class="uppercase" id="paymentStatus"></span>
+    </p>
+    <p>
+      <button class="w3-btn w3-blue" onclick="toggleUserInfo()">Show User Info</button>
+    </p>
+    <div class="userInfoDiv" id="userInfoDiv" style="display: none;">
+      <p>Email:
+        <span id="userEmail"></span>
+      </p>
+      <p>Phone:
+        <span id="userPhone"></span>
+      </p>
+    </div>
+    <table id="orderInfoTable">
+      <tr>
+        <th>N</th>
+        <th>Product Name</th>
+        <th>Option</th>
+        <th>Quantity</th>
+      </tr>
+    </table>
+
+    <p>
+      <a class="btnComplete w3-btn w3-blue" onclick="">Fulfilled</a>
+    </p>
+    <form action="./<%= orderInfoId %>" method="POST">
+      <input class="btnComplete w3-btn w3-blue" type="submit" value="Submit">
+    </form>
+
+  </div>
+
+</body>
+
+</html>

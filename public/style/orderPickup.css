@@ -1,0 +1,46 @@
+.orderInfoContainer{
+    max-width: 1000px;
+    width: 95%;
+    margin: auto;
+}
+
+.uppercase{
+    text-transform: uppercase;
+}
+
+
+
+
+#orderInfoTable {
+    border-collapse: collapse;
+    margin: auto;
+    max-width: 1000px;
+}
+
+td.orderInfoA {
+    width: 75%;
+}
+td.orderInfoB {
+    width: 15%;
+}
+td.orderInfoC {
+    width: 5%;
+}
+
+
+#orderInfoTable td, #orderInfoTable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#orderInfoTable tr:nth-child(even){background-color: #f2f2f2;}
+
+#orderInfoTable tr:hover {background-color: #ddd;}
+
+#orderInfoTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(177, 177, 177);
+    color: white;
+}
