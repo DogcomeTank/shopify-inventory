@@ -62,7 +62,11 @@ const UserSchema = new Schema({
     },
     accessLevel: {
         type: Number,
-        default: 1,
+        default: 0,
+    },
+    productAccess:{
+        type: Number,
+        default: 0,
     },
     orderAccess: {
         type: Number,

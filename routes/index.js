@@ -26,10 +26,10 @@ router.get('/orders/orderId/:orderId', (req, res) => {
     if (req.user == undefined) {
         res.redirect('/login/google-login');
     }else{
-        if (req.user.accessLevel) {
+        if (req.user.orderAccess) {
             res.render('orderPickup', {orderInfoId});
         } else {
-            res.redirect('/login/google-login');
+            res.send('Access denied.');
         }
     }
 

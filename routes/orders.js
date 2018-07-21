@@ -5,19 +5,75 @@ const keys = require('../model/keys');
 const rp = require('request-promise');
 const router = express.Router();
 
+router.get('/',(req, res)=>{
+    req.session.currentUrl = req.originalUrl;
+    const orderId = req.params.orderId;
+    if (req.user) {
+        if (req.user.orderAccess  == 1) {
+            // order information
+            res.render('orders');
+
+        } else {
+            res.redirect('/login/google-login');
+        }
+
+    } else {
+        res.redirect('/login/google-login');
+    }
+    
+});
+
+router.get('/orderInfo', (req, res) => {
+    req.session.currentUrl = req.originalUrl;
+    const orderId = req.params.orderId;
+    if (req.user) {
+        if (req.user.orderAccess  == 1) {
+            // order information api
+            var options = {
+                // uri: key.shopifyLink.productInfo,
+                uri: keys.shopifyLink.orderInfo,
+                headers: {
+                    'User-Agent': 'Request-Promise'
+                },
+                json: true // Automatically parses the JSON string in the response
+            };
+
+
+            rp(options)
+                .then(function (data) {
+                    res.json(data);
+                })
+                .catch(function (err) {
+                    // API call failed...
+                    res.send('API call failed. Err: '+ err);
+                });
+
+        } else {
+            res.redirect('/login/google-login');
+        }
+
+    } else {
+        res.redirect('/login/google-login');
+    }
+    
+
+});
+
+
 router.get('/orderId/:orderId', (req, res) => {
 
     // console.log(req.params.orderId);
 
     // display qr code
     //link: index.js
-    QRCode.toDataURL('http://localhost:8080/orders/orderId/'+ req.params.orderId, function (err, url) {
-        res.send('<img src="' + url + '"/>');
+    QRCode.toDataURL('http://lalarala/orders/orderId/'+ req.params.orderId, function (err, url) {
+        res.send('<img style="display: block; margin:auto; max-width: 410px; width: 100%;" src="' + url + '"/>');
     });
 
 });
 
 router.get('/orderInfo/orderId/:orderId', (req, res) => {
+    // close order
     req.session.currentUrl = req.originalUrl;
     const orderId = req.params.orderId;
     if (req.user) {
@@ -39,7 +95,7 @@ router.get('/orderInfo/orderId/:orderId', (req, res) => {
                 })
                 .catch(function (err) {
                     // API call failed...
-                    res.send('API call failed..');
+                    res.send('API call failed. Err: '+ err);
                 });
 
         } else {
@@ -81,7 +137,7 @@ router.get('/orderFulfill/orderId/:orderID',(req, res)=>{
                 })
                 .catch(function (err) {
                     // API call failed...
-                    res.send('API call failed..');
+                    res.send('API call failed: '+ err);
                 });
 
         } else {
@@ -92,7 +148,6 @@ router.get('/orderFulfill/orderId/:orderID',(req, res)=>{
         res.redirect('/login/google-login');
     }
 });
-
 
 
 module.exports = router;

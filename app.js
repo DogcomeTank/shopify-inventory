@@ -49,13 +49,13 @@ app.use(passport.session());
 
 const index = require('./routes/index');
 const Products = require('./routes/Products');
-const qrCode = require('./routes/qrcode');
+const orders = require('./routes/orders');
 const login = require('./routes/login');
 
 app.use('/login', login);
 app.use('/', index);
 app.use('/products', Products);
-app.use('/qrcode', qrCode);
+app.use('/orders', orders);
 
 
 
