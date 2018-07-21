@@ -15,26 +15,8 @@ router.get('/', (req, res) => {
         }
     }
 
-
 });
 
-router.get('/orders/orderId/:orderId', (req, res) => {
-    req.session.currentUrl = req.originalUrl;
-
-    const orderInfoId = req.params.orderId;
-
-    if (req.user == undefined) {
-        res.redirect('/login/google-login');
-    }else{
-        if (req.user.orderAccess) {
-            res.render('orderPickup', {orderInfoId});
-        } else {
-            res.send('Access denied.');
-        }
-    }
-
-
-});
 
 
 

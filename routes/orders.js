@@ -20,9 +20,40 @@ router.get('/',(req, res)=>{
     } else {
         res.redirect('/login/google-login');
     }
-    
 });
 
+router.get('/orderId/:orderId', (req, res) => {
+
+    // console.log(req.params.orderId);
+
+    // display qr code
+    //link: index.js
+    QRCode.toDataURL('http://lalarala/orders/orderId/'+ req.params.orderId, function (err, url) {
+        res.send('<img style="display: block; margin:auto; max-width: 410px; width: 100%;" src="' + url + '"/>');
+    });
+
+});
+
+
+router.get('/orderPickup/orderId/:orderId', (req, res) => {
+    // display pick up order information
+    req.session.currentUrl = req.originalUrl;
+
+    const orderInfoId = req.params.orderId;
+
+    if (req.user == undefined) {
+        res.redirect('/login/google-login');
+    }else{
+        if (req.user.orderAccess) {
+            res.render('orderPickup', {orderInfoId});
+        } else {
+            res.send('Access denied.');
+        }
+    }
+});
+
+
+// rest api for display pick up order information
 router.get('/orderInfo', (req, res) => {
     req.session.currentUrl = req.originalUrl;
     const orderId = req.params.orderId;
@@ -60,17 +91,7 @@ router.get('/orderInfo', (req, res) => {
 });
 
 
-router.get('/orderId/:orderId', (req, res) => {
 
-    // console.log(req.params.orderId);
-
-    // display qr code
-    //link: index.js
-    QRCode.toDataURL('http://lalarala/orders/orderId/'+ req.params.orderId, function (err, url) {
-        res.send('<img style="display: block; margin:auto; max-width: 410px; width: 100%;" src="' + url + '"/>');
-    });
-
-});
 
 router.get('/orderInfo/orderId/:orderId', (req, res) => {
     // close order

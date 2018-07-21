@@ -11,7 +11,7 @@
     $.ajax({
       type: "get",
       dataType: "json",
-      url: "/qrcode/orderInfo/orderId/<%= orderInfoId %>",
+      url: "/orders/orderInfo/orderId/<%= orderInfoId %>",
       timeout: 6000,
       success: function (orderData) {
 
@@ -97,12 +97,12 @@
       </tr>
     </table>
 
-    <p>
+    <!-- <p>
       <a class="btnComplete w3-btn w3-blue" onclick="">Fulfilled</a>
     </p>
     <form action="./<%= orderInfoId %>" method="POST">
       <input class="btnComplete w3-btn w3-blue" type="submit" value="Submit">
-    </form>
+    </form> -->
 
   </div>
 
